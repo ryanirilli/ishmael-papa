@@ -71,6 +71,21 @@ const jokes: Joke[] = [
     owner: "Bryan",
   },
   {
+    question: "I tell dad jokes...",
+    answer: "Sometimes he laughs.",
+    owner: "Bryan",
+  },
+  {
+    question: "You know Orion’s Belt?",
+    answer: "Big waist of space, huh?",
+    owner: "Bryan",
+  },
+  {
+    question: "6:30 is my favorite time of day...",
+    answer: "Hands down.",
+    owner: "Bryan",
+  },
+  {
     question: "Why did the dad bring a ladder to the bar?",
     answer: "Because he heard drinks were on the house!",
     owner: "Ryan",
@@ -98,7 +113,16 @@ const jokes: Joke[] = [
   },
 ];
 
-const JokesApp: React.FC = () => {
+let currentLaughIndex = 0;
+const laughs = [
+  "/laugh.m4a",
+  "/laugh2.m4a",
+  "/laugh3.m4a",
+  "/laugh4.m4a",
+  "/laugh5.m4a",
+];
+
+const DadJokes: React.FC = () => {
   const [remainingJokes, setRemainingJokes] = useState<Joke[]>([...jokes]);
   const [currentJoke, setCurrentJoke] = useState<Joke | null>(null);
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
@@ -109,22 +133,23 @@ const JokesApp: React.FC = () => {
   const [started, setStarted] = useState<boolean>(false);
 
   const playFunnyAudio = () => {
-    const audio = new Audio("/laugh.m4a"); // Path to your audio file
+    const audio = new Audio(laughs[currentLaughIndex]);
     audio.play();
+    currentLaughIndex = (currentLaughIndex + 1) % laughs.length;
   };
 
   const playWompAudio = () => {
-    const audio = new Audio("/womp.m4a"); // Path to your audio file
+    const audio = new Audio("/womp.m4a");
     audio.play();
   };
 
   const playBoopAudio = () => {
-    const audio = new Audio("/boop.m4a"); // Path to your audio file
+    const audio = new Audio("/boop.m4a");
     audio.play();
   };
 
   const playCheerAudio = () => {
-    const audio = new Audio("/cheer.m4a"); // Path to your audio file
+    const audio = new Audio("/cheer.m4a");
     audio.play();
   };
 
@@ -141,8 +166,12 @@ const JokesApp: React.FC = () => {
     }
   }, [remainingJokes]);
 
+const isLastJoke = remainingJokes.length === 0
+
   const progressPercentage =
-    ((jokes.length - remainingJokes.length) / jokes.length) * 100;  
+  isLastJoke
+      ? 100
+      : ((jokes.length - remainingJokes.length) / jokes.length) * 100;
 
   const handleVote = (funny: boolean) => {
     if (funny && currentJoke) {
@@ -207,53 +236,59 @@ const JokesApp: React.FC = () => {
             </Button>
           </Flex>
         ) : (
-          <Flex w="100%"
+          <Flex
+            w="100%"
             justify="center"
             align="center"
             height="100vh"
             direction="column"
           >
             <VStack
-            w="100%"
+              w="100%"
               position="relative"
               bg={showResult ? "whiteAlpha.400" : "white"}
               color={showResult ? "white" : "black"}
               spacing={4}
-              boxShadow={ showResult ? "none" : "2xl"}
+              boxShadow={showResult ? "none" : "2xl"}
               px={8}
               pb={8}
               pt={4}
               borderRadius={16}
             >
-              {!showResult && <Box w="100%" mb={8}>
-                <Text fontSize="small" mb={2} color="blackAlpha.500">
-                  {jokes.length - remainingJokes.length + 1} / {jokes.length}
-                </Text>
-                <Progress h={1}
-                  borderRadius="full"
-                  value={progressPercentage}
-                  width="100%"
-                />
-              </Box>}
-              {!showResult && <Box
-                position="absolute"
-                zIndex={-1}
-                top="-220px"
-                opacity={isFunny ? 1 : 0}
-              >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: isFunny ? 1 : 0 }}
-                  transition={springIsh}
-                >
-                  <Image
-                    alt="ishmael"
-                    src="/ish.png"
-                    width={1936}
-                    height={1296}
+              {!showResult && (
+                <Box w="100%" mb={8}>
+                  <Text fontSize="small" mb={2} color="blackAlpha.500">
+                    {jokes.length - remainingJokes.length + 1} / {jokes.length}
+                  </Text>
+                  <Progress
+                    h={1}
+                    borderRadius="full"
+                    value={progressPercentage}
+                    width="100%"
                   />
-                </motion.div>
-              </Box>}
+                </Box>
+              )}
+              {!showResult && (
+                <Box
+                  position="absolute"
+                  zIndex={-1}
+                  top="-220px"
+                  opacity={isFunny ? 1 : 0}
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: isFunny ? 1 : 0 }}
+                    transition={springIsh}
+                  >
+                    <Image
+                      alt="ishmael"
+                      src="/ish.png"
+                      width={1936}
+                      height={1296}
+                    />
+                  </motion.div>
+                </Box>
+              )}
               {showResult ? (
                 <Box textAlign="center" mt={4}>
                   <Text fontSize="xl">Dad Joke Champion</Text>
@@ -296,8 +331,8 @@ const JokesApp: React.FC = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{
-                        delay: 1,
-                        duration: 1,
+                        delay: 0.5,
+                        duration: 0.5,
                       }}
                     >
                       <Button
@@ -329,7 +364,7 @@ const JokesApp: React.FC = () => {
                       variant="outline"
                       borderRadius="full"
                     >
-                      Next
+                      {isLastJoke ? "And the winner is..." : "Next"}
                     </Button>
                   )}
                 </>
@@ -359,4 +394,4 @@ const JokesApp: React.FC = () => {
   );
 };
 
-export default JokesApp;
+export default DadJokes;
