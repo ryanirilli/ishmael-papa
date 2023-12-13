@@ -129,6 +129,11 @@ const JokesApp: React.FC = () => {
     audio.play();
   };
 
+  const playBoopAudio = () => {
+    const audio = new Audio("/boop.m4a"); // Path to your audio file
+    audio.play();
+  };
+
   const handleVote = (funny: boolean) => {
     if (funny && currentJoke) {
       playFunnyAudio();
@@ -145,7 +150,11 @@ const JokesApp: React.FC = () => {
   };
 
   const goToNextJoke = () => {
-    setRemainingJokes(remainingJokes.filter((joke) => joke !== currentJoke));
+    playBoopAudio();
+    setTimeout(() => {
+      setRemainingJokes(remainingJokes.filter((joke) => joke !== currentJoke));
+    }, 500)
+    
   };
 
   const getWinner = (): string => {
@@ -158,7 +167,7 @@ const JokesApp: React.FC = () => {
   return (
     <>
       {showResult && <Particles onComplete={() => {}} />}
-      <Container maxW='2xl'>
+      <Container maxW="2xl">
         {!started ? (
           <Flex
             justify="center"
@@ -264,8 +273,8 @@ const JokesApp: React.FC = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{
-                        delay: 1, 
-                        duration: 1, 
+                        delay: 1,
+                        duration: 1,
                       }}
                     >
                       <Button
@@ -273,7 +282,8 @@ const JokesApp: React.FC = () => {
                         onClick={() => handleVote(true)}
                         borderRadius="full"
                         variant="outline"
-                        size="lg" mr={4}
+                        size="lg"
+                        mr={4}
                       >
                         Ishmael approved
                       </Button>
@@ -307,7 +317,13 @@ const JokesApp: React.FC = () => {
                   variant="outline"
                   borderRadius="full"
                   m={2}
-                  onClick={() => setShowAnswer(true)}
+                  onClick={() => {
+                    playBoopAudio();
+                    setTimeout(() => {
+                      setShowAnswer(true);                    
+                    }, 500);
+                    
+                  }}
                   px={8}
                 >
                   Show Answer
