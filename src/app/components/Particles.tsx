@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import lottie from "lottie-web";
 import { Box } from "@chakra-ui/react";
 
+// @ts-ignore
 export default function Confetti({ onComplete, ...props }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
