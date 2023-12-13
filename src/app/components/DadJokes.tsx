@@ -8,6 +8,7 @@ import {
   Flex,
   VStack,
   HStack,
+  Progress,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -107,18 +108,6 @@ const JokesApp: React.FC = () => {
   const [showResult, setShowResult] = useState<boolean>(false);
   const [started, setStarted] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (remainingJokes.length > 0) {
-      const randomIndex = Math.floor(Math.random() * remainingJokes.length);
-      setCurrentJoke(remainingJokes[randomIndex]);
-      setShowAnswer(false);
-      setHasVoted(false);
-      setIsFunny(false);
-    } else {
-      setShowResult(true);
-    }
-  }, [remainingJokes]);
-
   const playFunnyAudio = () => {
     const audio = new Audio("/laugh.m4a"); // Path to your audio file
     audio.play();
@@ -133,6 +122,27 @@ const JokesApp: React.FC = () => {
     const audio = new Audio("/boop.m4a"); // Path to your audio file
     audio.play();
   };
+
+  const playCheerAudio = () => {
+    const audio = new Audio("/cheer.m4a"); // Path to your audio file
+    audio.play();
+  };
+
+  useEffect(() => {
+    if (remainingJokes.length > 0) {
+      const randomIndex = Math.floor(Math.random() * remainingJokes.length);
+      setCurrentJoke(remainingJokes[randomIndex]);
+      setShowAnswer(false);
+      setHasVoted(false);
+      setIsFunny(false);
+    } else {
+      playCheerAudio();
+      setShowResult(true);
+    }
+  }, [remainingJokes]);
+
+  const progressPercentage =
+    ((jokes.length - remainingJokes.length) / jokes.length) * 100;  
 
   const handleVote = (funny: boolean) => {
     if (funny && currentJoke) {
@@ -153,8 +163,7 @@ const JokesApp: React.FC = () => {
     playBoopAudio();
     setTimeout(() => {
       setRemainingJokes(remainingJokes.filter((joke) => joke !== currentJoke));
-    }, 500)
-    
+    }, 500);
   };
 
   const getWinner = (): string => {
@@ -198,21 +207,35 @@ const JokesApp: React.FC = () => {
             </Button>
           </Flex>
         ) : (
-          <Flex
+          <Flex w="100%"
             justify="center"
             align="center"
             height="100vh"
             direction="column"
           >
             <VStack
+            w="100%"
               position="relative"
-              bg="white"
+              bg={showResult ? "whiteAlpha.400" : "white"}
+              color={showResult ? "white" : "black"}
               spacing={4}
-              boxShadow="2xl"
-              padding={16}
+              boxShadow={ showResult ? "none" : "2xl"}
+              px={8}
+              pb={8}
+              pt={4}
               borderRadius={16}
             >
-              <Box
+              {!showResult && <Box w="100%" mb={8}>
+                <Text fontSize="small" mb={2} color="blackAlpha.500">
+                  {jokes.length - remainingJokes.length + 1} / {jokes.length}
+                </Text>
+                <Progress h={1}
+                  borderRadius="full"
+                  value={progressPercentage}
+                  width="100%"
+                />
+              </Box>}
+              {!showResult && <Box
                 position="absolute"
                 zIndex={-1}
                 top="-220px"
@@ -230,12 +253,12 @@ const JokesApp: React.FC = () => {
                     height={1296}
                   />
                 </motion.div>
-              </Box>
+              </Box>}
               {showResult ? (
-                <Box textAlign="center">
-                  <Text fontSize="xl">Best Dad Joke Teller</Text>
+                <Box textAlign="center" mt={4}>
+                  <Text fontSize="xl">Dad Joke Champion</Text>
                   <Text fontSize="2xl">
-                    <strong>{getWinner()}</strong>
+                    <strong>{getWinner()}!</strong>
                   </Text>
                 </Box>
               ) : (
@@ -320,9 +343,8 @@ const JokesApp: React.FC = () => {
                   onClick={() => {
                     playBoopAudio();
                     setTimeout(() => {
-                      setShowAnswer(true);                    
+                      setShowAnswer(true);
                     }, 500);
-                    
                   }}
                   px={8}
                 >
