@@ -22,7 +22,7 @@ const spring = {
 const springIsh = {
   type: "spring",
   stiffness: 600,
-  damping: 15,  
+  damping: 15,
 };
 
 type Joke = {
@@ -158,7 +158,7 @@ const JokesApp: React.FC = () => {
   return (
     <>
       {showResult && <Particles onComplete={() => {}} />}
-      <Container>
+      <Container maxW='2xl'>
         {!started ? (
           <Flex
             justify="center"
@@ -166,12 +166,27 @@ const JokesApp: React.FC = () => {
             height="100vh"
             direction="column"
           >
-            <Text color="white" fontSize="lg" mb={4} >
-              <Box fontSize="x-large" as="strong">Ishmael</Box>, you&apos;re going to be a dad, again, soon. It is in your nature to recognize a decent dad joke when you read one. This test will determine who amongst your coworkers is best dad joke teller of them all.</Text>
-              <Text color="white" fontSize="lg" mb={16} >
-                You must first guess the answer before you can see it. Then you must vote if it is funny or not. The winner will be the one who tells the most funny jokes.
-              </Text>
-            <Button borderRadius="full" size="lg" onClick={() => setStarted(true)}>Let&apos;s get started</Button>
+            <Text color="white" fontSize="lg" mb={4}>
+              <Box fontSize="x-large" as="strong">
+                Ishmael
+              </Box>
+              , you&apos;re going to be a dad, again, soon. It is in your nature
+              to recognize a decent dad joke when you read one. This test will
+              determine who amongst your coworkers is best dad joke teller of
+              them all.
+            </Text>
+            <Text color="white" fontSize="lg" mb={16}>
+              You must first guess the answer before you can see it. Then you
+              must vote if it is funny or not. The winner will be the one who
+              tells the most funny jokes.
+            </Text>
+            <Button
+              borderRadius="full"
+              size="lg"
+              onClick={() => setStarted(true)}
+            >
+              Let&apos;s get started
+            </Button>
           </Flex>
         ) : (
           <Flex
@@ -193,7 +208,6 @@ const JokesApp: React.FC = () => {
                 zIndex={-1}
                 top="-220px"
                 opacity={isFunny ? 1 : 0}
-                
               >
                 <motion.div
                   initial={{ scale: 0 }}
@@ -246,15 +260,22 @@ const JokesApp: React.FC = () => {
               {showAnswer && (
                 <>
                   {!hasVoted && (
-                    <>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{
+                        delay: 1, 
+                        duration: 1, 
+                      }}
+                    >
                       <Button
                         colorScheme="blackAlpha"
                         onClick={() => handleVote(true)}
                         borderRadius="full"
                         variant="outline"
-                        size="lg"
+                        size="lg" mr={4}
                       >
-                        Funny
+                        Ishmael approved
                       </Button>
                       <Button
                         colorScheme="blackAlpha"
@@ -263,27 +284,31 @@ const JokesApp: React.FC = () => {
                         variant="outline"
                         size="lg"
                       >
-                        Not Funny
+                        Not my cup of tea
                       </Button>
-                    </>
+                    </motion.div>
                   )}
                   {hasVoted && !showResult && (
                     <Button
+                      px={16}
                       onClick={goToNextJoke}
-                      colorScheme="blue"
+                      colorScheme="blackAlpha"
+                      variant="outline"
                       borderRadius="full"
                     >
-                      Next Joke
+                      Next
                     </Button>
                   )}
                 </>
               )}
               {!showAnswer && !showResult && (
                 <Button
-                  colorScheme="blue"
+                  colorScheme="blackAlpha"
+                  variant="outline"
                   borderRadius="full"
                   m={2}
                   onClick={() => setShowAnswer(true)}
+                  px={8}
                 >
                   Show Answer
                 </Button>
